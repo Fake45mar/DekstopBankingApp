@@ -9,10 +9,14 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class simpleBank {
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    private String date = sdf.format(new Date());
     private final String USER_AGENT = "Mozilla/5.0";
     private URL obj;
     private HttpURLConnection con;
@@ -24,11 +28,15 @@ public class simpleBank {
     private JSONObject USDcurrency;
     private JSONObject EURcurrency;
     private JSONObject GBPcurrency;
+    private JSONObject jsonCurseGBP;
+    private JSONObject jsonCurseUSD;
+    private JSONObject jsonCurseEUR;
     private String GBP;
     private String EUR;
     private String USD;
 
-    public void reqestCrpitoCurrency(String url) throws Exception{
+    public String reqestCrpitoCurrency() throws Exception{
+        String url = "https://api.coindesk.com/v1/bpi/currentprice.json";
         obj = new URL(url);
         con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
@@ -49,24 +57,72 @@ public class simpleBank {
         EUR = EURcurrency.get("rate").toString();
         GBPcurrency = new JSONObject(currency.get("GBP").toString());
         GBP = GBPcurrency.get("rate").toString();
-        System.out.println(response.toString());
-//        USD = new JSONObject(USDcurrency.get("rate").toString());
-//        System.out.println(json.getString("bpi"));
-//        System.out.println("Response :" + USD.toString());
+        return (USD + " USD " + EUR + " EUR" + " " + GBP + " GBP");
     }
-    public void getCurrencyCurse(String url) throws Exception{
+
+    public String getCurrencyEUR() throws Exception{
+        String url = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?" + "valcode=EUR" + "&date=" + date + "&json";
         System.out.println(url);
         obj = new URL(url);
         conn = (HttpsURLConnection) obj.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("User-Agent", USER_AGENT);
         conn.setDoOutput(true);
+        int responseCode = conn.getResponseCode();
+        System.out.println(responseCode);
         requestResponse = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         StringBuffer response = new StringBuffer();
         String input;
         while((input = requestResponse.readLine()) != null){
             response.append(input);
         }
-        System.out.println(response.toString());
+        response.deleteCharAt(0);
+        response.deleteCharAt(response.length() - 1);
+        jsonCurseEUR = new JSONObject(response.toString());
+        return (jsonCurseEUR.get("rate") + " EUR");
+//        System.out.println(response.toString());
+    }
+
+    public String getCurrencyUSD() throws Exception{
+        String url = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?" + "valcode=USD" + "&date=" + date + "&json";
+        System.out.println(url);
+        obj = new URL(url);
+        conn = (HttpsURLConnection) obj.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("User-Agent", USER_AGENT);
+        int responseCode = con.getResponseCode();
+        System.out.println("Response code " + responseCode);
+        requestResponse = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        StringBuffer response = new StringBuffer();
+        String input;
+        while((input = requestResponse.readLine()) != null){
+            response.append(input);
+        }
+        response.deleteCharAt(0);
+        response.deleteCharAt(response.length() - 1);
+        jsonCurseUSD = new JSONObject(response.toString());
+        return(jsonCurseUSD.get("rate") + " USD");
+//        System.out.println(response.toString());
+    }
+
+    public String getCurrencyGBP() throws Exception{
+        String url = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?" + "valcode=GBP" + "&date=" + date + "&json";
+        System.out.println(url);
+        obj = new URL(url);
+        conn = (HttpsURLConnection) obj.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("User-Agent", USER_AGENT);
+        int responseCode = con.getResponseCode();
+        System.out.println("Response code " + responseCode);
+        requestResponse = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        StringBuffer response = new StringBuffer();
+        String input;
+        while((input = requestResponse.readLine()) != null){
+            response.append(input);
+        }
+        response.deleteCharAt(0);
+        response.deleteCharAt(response.length() - 1);
+        jsonCurseGBP = new JSONObject(response.toString());
+        return (jsonCurseGBP.get("rate") + " GBP");
     }
 }
