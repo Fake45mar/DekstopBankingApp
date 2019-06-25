@@ -22,7 +22,7 @@ public class window extends JFrame {
         mainFrame.setResizable(false);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container container = mainFrame.getContentPane();
-        container.setLayout(new GridLayout(5, 2, 2, 2));
+        container.setLayout(new GridLayout(5, 2));
         container.add(titleBitcoin);
         courseBitcoinUsdEurGbp = new JLabel(requestCurrency.reqestCrpitoCurrency());
         container.add(courseBitcoinUsdEurGbp);
@@ -37,7 +37,7 @@ public class window extends JFrame {
         container.add(gbpCurse);
         repeatRequest = new Button("Repeat");
         repeatRequest.addActionListener(new ButtonEventListener());
-        mainFrame.add(repeatRequest);
+        container.add(repeatRequest);
         container.setVisible(true);
         mainFrame.setVisible(true);
     }
